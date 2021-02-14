@@ -86,6 +86,11 @@ contract StakeholderRegistration {
         return stakeholderMap[_Address];
     }
 
+    // Function to check if Stakeholder exists
+    function existsStakeholder(address _Address) public view returns (bool) {
+        return Stakeholders[_Address];
+    }
+
     // Function to Update a Stakeholder
     function updateStakeholder(string memory _Name, string memory _Information)
         public
