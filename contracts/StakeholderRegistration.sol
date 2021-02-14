@@ -1,7 +1,5 @@
 pragma solidity ^0.5.13;
 
-import "./prescription.sol";
-
 contract StakeholderRegistration {
     address public Issuer; // Address of Ceator & Administrator of the contract
     address[] TempRegistrations; // List of Temporary Registrations
