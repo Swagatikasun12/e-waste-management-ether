@@ -2,9 +2,9 @@ pragma solidity ^0.5.13;
 
 contract StakeholderRegistration {
     address public Issuer; // Address of Ceator & Administrator of the contract
-    address[] TempRegistrations; // List of Temporary Registrations
+    address[] public TempRegistrations; // List of Temporary Registrations
     mapping(address => bool) public Stakeholders; // Mapping for Stakeholders
-    mapping(address => tempRegistartion) public tempRegistrationMap; // Mapping to store Temporary Registrations (Stakeholder's address) => (tempRegistration)
+    mapping(address => tempRegistration) public tempRegistrationMap; // Mapping to store Temporary Registrations (Stakeholder's address) => (tempRegistration)
     mapping(address => stakeholder) public stakeholderMap; // Mapping to store (Stakeholder's Address) => (Stakeholders's Details)
 
     // Structure to store details of temporary registration
@@ -35,16 +35,15 @@ contract StakeholderRegistration {
     // Constructor to create the Contract
     constructor() public {
         Issuer = msg.sender; // Setting the Issuer
-        tempRegistrations = new address[](0); // Init. of address[] tempRegistrations List
-        Registrations = new address[](0); // Init. of address[] stakeholders List
+        TempRegistrations = new address[](0); // Init. of address[] TempRegistrations List
     }
 
     // Function to Create new tempRegistration
     function createTempRegistration(string memory _Payload) public {
         tempRegistration memory newTempRegistration =
             tempRegistration({Payload: _Payload, Creator: msg.sender});
-        TempRegistrations.push(_id); // Push TempRegistration ID to tempRegistration List
-        tempRegistrationMap[_id] = newTempRegistration; // Add newTempRegistration to tempRegistration
+        TempRegistrations.push(msg.sender); // Push TempRegistration ID to tempRegistration List
+        tempRegistrationMap[msg.sender] = newTempRegistration; // Add newTempRegistration to tempRegistration
     }
 
     // Function to Create new Stakeholder
@@ -53,7 +52,7 @@ contract StakeholderRegistration {
         string memory _ID,
         string memory _Name,
         string memory _Information,
-        uint256 _Type
+        string memory _Type
     ) public onlyIssuer {
         stakeholder memory newStakeholder =
             stakeholder({
@@ -66,24 +65,6 @@ contract StakeholderRegistration {
         Stakeholders[_Account] = true; // Add Stakeholder's Address to Stakeholders mapping
         stakeholderMap[_Account] = newStakeholder; // Add new Stakeholder to stakeholderMap
         removeTempRegistration(_Account); // Remove Temporary Registration
-    }
-
-    // Function to Read Temporary Registration
-    function readTempRegistration(address _Address)
-        public
-        view
-        returns (tempRegistration)
-    {
-        return tempRegistrationMap[_Address];
-    }
-
-    // Function to Read Stakeholder
-    function readStakeholder(address _Address)
-        public
-        view
-        returns (stakeholder)
-    {
-        return stakeholderMap[_Address];
     }
 
     // Function to check if Stakeholder exists
@@ -106,29 +87,28 @@ contract StakeholderRegistration {
     // ----------------
 
     // Function to Remove tempRegistration from array and mapping
-    function removeTempRegistration(address _target) {
+    function removeTempRegistration(address _target) private {
         uint8 index = 0;
 
         // Determine Index of the target
-        for (uint8 i = 0; i < tempRegistrations.length; i++) {
-            if (tempRegistrations[i] == _target) {
+        for (uint8 i = 0; i < TempRegistrations.length; i++) {
+            if (TempRegistrations[i] == _target) {
                 index = i;
             }
         }
 
-        // Remove target from tempRegistrations
-        if (index >= tempRegistrations.length) return;
-        for (uint8 i = index; i < tempRegistrations.length - 1; i++) {
-            tempRegistrations[i] = tempRegistrations[i + 1];
+        // Remove target from TempRegistrations
+        if (index >= TempRegistrations.length) return;
+        for (uint8 i = index; i < TempRegistrations.length - 1; i++) {
+            TempRegistrations[i] = TempRegistrations[i + 1];
         }
-        tempRegistrations.length--;
+        TempRegistrations.length--;
 
         delete tempRegistrationMap[_target];
     }
 
     // Function to self-destruct ONLY FOR TESTING
     function kill() public onlyIssuer {
-        prescriptionVault.kill();
         selfdestruct(address(uint160(Issuer)));
     }
 }
