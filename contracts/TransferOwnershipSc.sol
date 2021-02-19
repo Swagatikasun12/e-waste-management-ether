@@ -1,4 +1,4 @@
-pragma solidity >=0.4.21 <0.6.0;
+ pragma solidity >=0.4.21 <0.6.0;
  import "./RegistrationSc.sol";
  import "./Token.sol";
  contract TransferOwnership is Registration, Token
@@ -9,9 +9,10 @@ pragma solidity >=0.4.21 <0.6.0;
         r1 = addr;
         r2 = addr1;
     }
-     string ciphertext;
-    string data_id;
-  struct track_data {
+  string ciphertext;
+  string data_id;
+  struct track_data 
+  {
         uint _previous_owner_id;
         string _previous_owner_name;
         uint _data_id;
@@ -21,7 +22,7 @@ pragma solidity >=0.4.21 <0.6.0;
         uint _timeStamp;
         string _owner_type;
     }
-    mapping(uint => track_data) public tracks;
+ mapping(uint => track_data) public tracks;
  
  function transfer(uint user1, uint user2, uint[] dataid, uint[] tokenid) public returns(uint,uint)
  {
@@ -29,12 +30,11 @@ pragma solidity >=0.4.21 <0.6.0;
       uint transfer_id = _t_id;
         uint token1_id=1;
         uint i=1;
-     
         User  p1 =  Users[user1];
         User  p2 = Users[user2];
         if((keccak256(p1._userType) == keccak256("Owner") && keccak256(p2._userType)==keccak256("CurrentOwner")) ||
-        (keccak256(p1._userType) == keccak256("CurrentOwner") && keccak256(p2._userType)==keccak256("CurrentOwner"))
-        ){
+        (keccak256(p1._userType) == keccak256("CurrentOwner") && keccak256(p2._userType)==keccak256("CurrentOwner")))
+        {
             //tracks[transfer_id]._data_id =data_id[i];
             tracks[transfer_id]._token_id =tokenidew;
             tracks[transfer_id]._owner_id = user2;
