@@ -15,13 +15,7 @@ contract AccessControl is Registration,TransferOwnership
         
    // address product_address;
     uint pid;
-    struct details
-    {
-        uint _product_id;
-        uint _owner_id;
-        //string _owner_name;
-        string _owner_type;
-    }
+   
     constructor(uint product_id, uint owner_id) public
     {
         //Just create a new auxiliary contract. We will use it to check if the part or product really exist
@@ -35,6 +29,7 @@ contract AccessControl is Registration,TransferOwnership
         uint p_id;
         uint o_id;
         uint timelimit;
+        string toknid;
         //string smartcontract_name;
         uint product_id;
        // bytes32 interactionId;
