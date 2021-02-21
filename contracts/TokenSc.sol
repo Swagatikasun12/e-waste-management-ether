@@ -6,15 +6,19 @@ contract Token  {
     uint public _t_id=1;
     uint public tokenidd=0;
     
-    struct token1 {
-        string username;
-        uint[] userid;
-        address owner1;
-        uint[] _data_ids;
-        uint[] _token_ids;
+    struct token1 
+    {
+        //string username;
+        uint ownerid;
+        uint rcvrid;
+        //address owner1;
+        uint _data_ids;
+        //uint _token_ids;
+        uint timelimit;
+        //uint now;
+             
     }
- 
-   mapping(uint => token1) public tokens;
+    mapping(uint => token1) public tokens1;
  
       function createToken(uint[] userid, uint[] _data_ids ,uint[] _token_ids) public returns (uint)
       {
@@ -34,7 +38,15 @@ contract Token  {
         _token_id++;
         return _token_id;
     }
- 
+ function createToken1(uint ownerid1, uint rcvrid1, uint _data_ids1 ,uint timelimit1) public returns (uint)
+      {
+        tokens1[_token_id1].ownerid = ownerid1;
+        tokens1[_token_id1].rcvrid = rcvrid1;
+        tokens1[_token_id1]._data_ids = _data_ids1;
+        tokens1[_token_id1].timelimit = timelimit1;
+          _token_id1++;
+        return _token_id1;
+    }
     function getsplit(uint token2_id)public view returns(uint [], uint [])
     {
         return (tokens[token2_id]._data_ids, tokens[token2_id]._token_ids);
