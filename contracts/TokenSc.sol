@@ -1,75 +1,89 @@
 pragma solidity >=0.4.21 <0.6.0;
-contract Token  
-{
-    
-    uint public _d_id =0;
-    uint public _u_id =0;
-    uint public _token_id =1;
-    uint public _token_id1 =1;
-    //uint public _t_id=1;
-    //uint public tokenidd=0;
-    
-      struct token1 
-    {
-       // string username;
-        //uint[] userid;
-        uint ownerid;
-        uint[] _product_ids;
-        uint[] _token_ids;
-    }
- 
-   mapping(uint => token1) public tokens;
+
+//import "./RegistrationSc.sol";
+//import "./TransferOwnershipSc.sol";
+import "./tokenSc.sol";
+contract AccessControl 
+  {
+      event Transfer(address indexed from, address indexed to, uint256 tok);
+      event Approval(address indexed access, address indexed req, uint256 tok);
+      mapping(address => mapping (address => uint256)) allowed;
+     
+     Token public to;
+     constructor(Token addr1) public 
+     {
+        //dc = addr;
+        to = addr1;
+     }
+        
+   // address product_address;
+    uint pid;
    
-    struct token2 
-    {
-        //string username;
-        uint ownerid;
-        uint rcvrid;
-        //address owner1;
-        uint _data_id;
-        //uint _token_ids;
+   
+   struct lookup{
+       /* uint b_id;
+        uint p_id;
+        uint o_id;
         uint timelimit;
-        //uint now;
-             
-    }
-    mapping(uint => token2) public tokens1;
-  // mapping(uint => token1) public tokens1;
- 
-      function createToken(uint[] memory _product_ids ,uint[] memory _token_ids, uint ownerid) public returns (uint)
-      {
-       /*for(uint u=0;u<userids.length;u++)
-       {
-        tokens[u].userid.push(userids[u]);
-       }*/
-        for(uint i=0;i<_product_ids.length;i++)
-        {
-            tokens[i]._product_ids.push(_product_ids[i]);
+        string toknid;
+        //string smartcontract_name;
+        uint product_id;
+       // bytes32 interactionId;
+        uint _timeStamp;
+        //uint flag;*/
+        string permission;
+        uint key;
+        uint dataid;
+        uint o_id;
+        uint rcvr_id;
+        uint timelim;
         }
-        for(uint j=0;j<_token_ids.length;j++)
-        {
-            tokens[j]._token_ids.push(_token_ids[j]);
-        }
-        uint _toke_id=0;
-     tokens[_toke_id].ownerid = ownerid;
-     _toke_id++;
-        _token_id++;
-        return _token_id;
+       
+    mapping(uint => lookup) public lookups;
+     
+    //string reencryptedmsg;
+    //string empheralencryptedkey;
+   function enter_lookup(string memory permission, uint key, uint dataid, uint o_id, uint rcvr_id, uint timelim) public returns (uint)
+   {   
+       uint k;
+       lookups[k].permission = permission;
+       lookups[k].key = key;
+       lookups[k].dataid = dataid;
+       lookups[k].o_id = o_id;
+       lookups[k].rcvr_id = rcvr_id;
+       lookups[k].timelim = timelim;
+        k++;
+        return k; 
+        uint tokenide = to.createToken1(o_id,rcvr_id,dataid,timelim);
+        return tokenide;
+   }
+   
+    function approve(address delegate, uint256 Tokens) public  returns (bool) {
+
+        allowed[msg.sender][delegate] = Tokens;
+
+        emit Approval(msg.sender, delegate, Tokens);
+
+        return true;
+
     }
- function createToken1(uint ownerid1, uint rcvrid1, uint _data_ids1 ,uint timelimit1) public returns (uint)
-      {
-        tokens1[_token_id1].ownerid = ownerid1;
-        tokens1[_token_id1].rcvrid = rcvrid1;
-        tokens1[_token_id1]._data_id = _data_ids1;
-        tokens1[_token_id1].timelimit = timelimit1;
-          _token_id1++;
-        return _token_id1;
+
+    /*function allowance(address owner, address reqestor) public  view returns (uint) {
+
+        return allowed[owner][reqestor];
+
+    }*/
+
+    function transferFrom(address accesssc, address buyer, uint256 Tokens) public  returns (bool) {
+
+        
+   emit Transfer(accesssc, buyer, Tokens);
+
+        return true;
+
     }
-    function getsplit(uint tokenn2_id)public view returns(uint [] memory, uint [] memory)
-    {
-        return (tokens[tokenn2_id]._product_ids, tokens[tokenn2_id]._token_ids);
-    }
-    function getsplittoken1(uint tokenn_id)public view returns(uint, uint, uint, uint )
-    {
-        return (tokens1[tokenn_id].ownerid, tokens1[tokenn_id].rcvrid, tokens1[tokenn_id]._data_id, tokens1[tokenn_id].timelimit);
-    }
-    }
+
+
+
+    
+}
