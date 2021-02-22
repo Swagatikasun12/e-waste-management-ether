@@ -1,8 +1,8 @@
 pragma solidity >=0.4.21 <0.6.0;
 contract Token  {
-    string public constant name = "Token4Tranfer";
+    //string public constant name = "Token4Tranfer";
 
-    string public constant symbol = "Tok";
+    //string public constant symbol = "Tok";
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
 
    // event Transfer(address indexed from, address indexed to, uint tokens);
