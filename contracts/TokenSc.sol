@@ -13,8 +13,7 @@ contract Token  {
     //uint public _t_id=1;
     //uint public tokenidd=0;
     
-      struct token1 
-    {
+      struct Token4Product
        string username;
         uint[] userid;
         address owner1;
@@ -22,9 +21,9 @@ contract Token  {
         uint[] _token_ids;
     }
  
-   mapping(uint => token1) public tokens;
+   mapping(uint => Token4Product) public tokens;
    
-    struct token2 
+    struct Token4Permission 
     {
         //string username;
         uint ownerid;
@@ -36,7 +35,7 @@ contract Token  {
         //uint now;
              
     }
-    mapping(uint => token2) public tokens1;
+    mapping(uint => Token4Permission) public tokens1;
   // mapping(uint => token1) public tokens1;
  
       function createToken(uint[] memory _data_ids ,uint[] memory _token_ids) public returns (uint)
