@@ -57,6 +57,8 @@ class App extends Component {
                             if (reason === "clickaway") {
                                 return;
                             }
+
+                            this.setState({ warning: false });
                         }}
                         severity="warning"
                     >
@@ -65,7 +67,7 @@ class App extends Component {
                 </Snackbar>
                 <form onSubmit={this.onFindDoctor}>
                     <div>
-                        <Grid container spacing={3}>
+                        <Grid container spacing={1}>
                             <Grid item xs={12}>
                                 <Typography variant="h4">Register as Stakeholder</Typography>
                             </Grid>
@@ -96,7 +98,7 @@ class App extends Component {
                                 />
                             </Grid>
                             <Grid item xs={4}>
-                                <FormControl variant="filled" style={{ width: 200 }}>
+                                <FormControl variant="filled" style={{ width: 180 }}>
                                     <InputLabel>Stakeholder Type</InputLabel>
                                     <Select
                                         variant="outlined"

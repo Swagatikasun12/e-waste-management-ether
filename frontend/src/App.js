@@ -25,14 +25,15 @@ class App extends Component {
     async componentDidMount() {
         if (window.ethereum) {
             window.ethereum.enable();
+            const accounts = await web3.eth.getAccounts();
+
+            this.setState({ account: accounts[0] });
+            await this.getUserType();
         } else {
             alert("ERROR! WEB 3 NOT FOUND!");
         }
 
-        const accounts = await web3.eth.getAccounts();
-
-        this.setState({ account: accounts[0] });
-        await this.getUserType();
+        
     }
 
     // GET type of user using the account address
