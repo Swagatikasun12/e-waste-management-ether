@@ -99,6 +99,15 @@ contract StakeholderRegistration {
         return stakeholderTypeMap[getTypeValue(stakeholderType(_type))];
     }
 
+    // Function to check if Stakeholder exists
+    function getTempRegistrations()
+        public
+        view
+        returns (address[] memory)
+    {
+        return TempRegistrations;
+    }
+
     // Function to Update a Stakeholder
     function updateStakeholder(string memory _Name, string memory _Information)
         public
