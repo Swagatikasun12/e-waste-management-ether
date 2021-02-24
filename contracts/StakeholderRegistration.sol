@@ -1,16 +1,33 @@
 pragma solidity ^0.5.13;
 
 contract StakeholderRegistration {
+    enum stakeholderType {
+        Manufacturer,
+        Wholesaler,
+        Retailer,
+        Customer,
+        Collector,
+        Segregator,
+        RecyclingCenter,
+        RawMaterialSuppiler
+    } // ENUM for Stakeholder types
+
     address public Issuer; // Address of Ceator & Administrator of the contract
     address[] public TempRegistrations; // List of Temporary Registrations
+    mapping(uint256 => address[]) private stakeholderTypeMap; // Mapping for Stakeholder Type list
     mapping(address => bool) public Stakeholders; // Mapping for Stakeholders
     mapping(address => tempRegistration) public tempRegistrationMap; // Mapping to store Temporary Registrations (Stakeholder's address) => (tempRegistration)
-    mapping(address => stakeholder) public stakeholderMap; // Mapping to store (Stakeholder's Address) => (Stakeholders's Details)
+    mapping(address => stakeholder) public StakeholderMap; // Mapping to store (Stakeholder's Address) => (Stakeholders's Details)
 
     // Structure to store details of temporary registration
     struct tempRegistration {
         string Payload; // Registration Payload
         address Creator; // Tx Sender Address
+    }
+
+    // Structure to store Stakeholder Type Array
+    struct stakeholderArray {
+        address Stakeholder; // list of Stakeholders
     }
 
     // Structure to store details of a Stakeholder
@@ -19,7 +36,7 @@ contract StakeholderRegistration {
         string ID; // ID of Stakeholder
         string Name; // Name of Stakeholder
         string Information; // Encrypted Information of Stakeholder
-        string Type; // Type of Stakeholder
+        stakeholderType Type; // Type of Stakeholder
     }
 
     modifier onlyIssuer() {
@@ -52,7 +69,7 @@ contract StakeholderRegistration {
         string memory _ID,
         string memory _Name,
         string memory _Information,
-        string memory _Type
+        uint8 _Type
     ) public onlyIssuer {
         stakeholder memory newStakeholder =
             stakeholder({
@@ -60,10 +77,11 @@ contract StakeholderRegistration {
                 ID: _ID,
                 Name: _Name,
                 Information: _Information,
-                Type: _Type
+                Type: stakeholderType(_Type)
             });
         Stakeholders[_Account] = true; // Add Stakeholder's Address to Stakeholders mapping
-        stakeholderMap[_Account] = newStakeholder; // Add new Stakeholder to stakeholderMap
+        StakeholderMap[_Account] = newStakeholder; // Add new Stakeholder to StakeholderMap
+        stakeholderTypeMap[getTypeValue(stakeholderType(_Type))].push(_Account); // Add new Stakeholder's address to stakeholderTypeMap
         removeTempRegistration(_Account); // Remove Temporary Registration
     }
 
@@ -72,14 +90,23 @@ contract StakeholderRegistration {
         return Stakeholders[_Address];
     }
 
+    // Function to check if Stakeholder exists
+    function getStakeholdersOfType(uint256 _type)
+        public
+        view
+        returns (address[] memory)
+    {
+        return stakeholderTypeMap[getTypeValue(stakeholderType(_type))];
+    }
+
     // Function to Update a Stakeholder
     function updateStakeholder(string memory _Name, string memory _Information)
         public
         onlyStakeholder
     {
         require(Stakeholders[msg.sender], "Stakeholder Doesn't Exist!");
-        stakeholderMap[msg.sender].Name = _Name;
-        stakeholderMap[msg.sender].Information = _Information;
+        StakeholderMap[msg.sender].Name = _Name;
+        StakeholderMap[msg.sender].Information = _Information;
     }
 
     // ----------------
@@ -105,6 +132,14 @@ contract StakeholderRegistration {
         TempRegistrations.length--;
 
         delete tempRegistrationMap[_target];
+    }
+
+    function getTypeValue(stakeholderType _stype)
+        private
+        pure
+        returns (uint256)
+    {
+        return uint256(stakeholderType(_stype));
     }
 
     // Function to self-destruct ONLY FOR TESTING
