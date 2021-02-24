@@ -11,10 +11,15 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
+import StakeholderRegistration from "../contracts/StakeholderRegistration";
 
 class App extends Component {
     state = {
         warning: true,
+        status: "",
+        success: false,
 
         // Form Params
         Name: "",
@@ -29,11 +34,61 @@ class App extends Component {
     onRegisterStakeholder = async () => {
         // Functions Body
         // TODO: Add calls to register Stakeholder
+        this.setState({
+            status: (
+                <Grid item xs={12}>
+                    <CircularProgress color="secondary" />
+                </Grid>
+            ),
+        });
+
         const accounts = await web3.eth.getAccounts();
-        const payload = await web3.eth.personal.sign("Hi there!", accounts[0]);
-        console.log("ENC", payload);
-        const payload0 = await web3.eth.personal.ecRecover("Hi there!", payload);
-        console.log("DEC", payload0);
+
+        let payload = JSON.stringify({
+            Name: this.state.Name,
+            ID: this.state.ID,
+            Type: this.state.Type,
+
+            Address: this.state.Address,
+            Phone: this.state.Phone,
+        });
+
+        await StakeholderRegistration.methods.createTempRegistration(payload).send({
+            from: accounts[0],
+        });
+
+        this.setState({ success: true });
+
+        this.setState({
+            status: (
+                <Snackbar
+                    open={this.state.success}
+                    autoHideDuration={6000}
+                    onClose={(event, reason) => {
+                        if (reason === "clickaway") {
+                            return;
+                        }
+
+                        this.setState({ success: false });
+                    }}
+                >
+                    <MuiAlert
+                        elevation={6}
+                        variant="filled"
+                        onClose={(event, reason) => {
+                            if (reason === "clickaway") {
+                                return;
+                            }
+
+                            this.setState({ success: false });
+                        }}
+                        severity="success"
+                    >
+                        Registration Request Successful!
+                    </MuiAlert>
+                </Snackbar>
+            ),
+        });
     };
 
     render() {
@@ -146,6 +201,11 @@ class App extends Component {
                     <Button onClick={this.onRegisterStakeholder} color="secondary" variant="contained">
                         Register
                     </Button>
+                    <br />
+                    <br />
+                    <Grid container spacing={1}>
+                        {this.state.status}
+                    </Grid>
                 </form>
             </div>
         );

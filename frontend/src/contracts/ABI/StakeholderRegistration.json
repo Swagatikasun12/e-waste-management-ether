@@ -29,6 +29,47 @@
                 "type": "address"
             }
         ],
+        "name": "StakeholderMap",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "Account",
+                "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "ID",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "Name",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "Information",
+                "type": "string"
+            },
+            {
+                "internalType": "enum StakeholderRegistration.stakeholderType",
+                "name": "Type",
+                "type": "uint8"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
         "name": "Stakeholders",
         "outputs": [
             {
@@ -86,9 +127,9 @@
                 "type": "string"
             },
             {
-                "internalType": "string",
+                "internalType": "uint8",
                 "name": "_Type",
-                "type": "string"
+                "type": "uint8"
             }
         ],
         "name": "createStakeholder",
@@ -134,53 +175,48 @@
         "type": "function"
     },
     {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_type",
+                "type": "uint256"
+            }
+        ],
+        "name": "getStakeholdersOfType",
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "",
+                "type": "address[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "getTempRegistrations",
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "",
+                "type": "address[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "constant": false,
         "inputs": [],
         "name": "kill",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "stakeholderMap",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "Account",
-                "type": "address"
-            },
-            {
-                "internalType": "string",
-                "name": "ID",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "Name",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "Information",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "Type",
-                "type": "string"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
         "type": "function"
     },
     {

@@ -48,8 +48,8 @@ class App extends Component {
         const accounts = await web3.eth.getAccounts();
         this.setState({ account: accounts[0] });
 
-        let tempRegistrations = await StakeholderRegistration.methods.TempRegistrations().call();
-        // console.log("TEMPREG", tempRegistrations);
+        let tempRegistrations = await StakeholderRegistration.methods.getTempRegistrations().call();
+        console.log("TEMPREG", tempRegistrations);
     }
 
     render() {
