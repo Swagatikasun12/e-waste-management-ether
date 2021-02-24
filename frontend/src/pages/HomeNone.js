@@ -24,7 +24,7 @@ class App extends Component {
         // Form Params
         Name: "",
         ID: "",
-        Type: "",
+        Type: 0,
         // Form PrivateInformation
         Address: "",
         Phone: "",
@@ -120,7 +120,7 @@ class App extends Component {
                         Oops! You are not registered. Try Registering as a Stakeholder.
                     </MuiAlert>
                 </Snackbar>
-                <form onSubmit={this.onFindDoctor}>
+                <form>
                     <div>
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
@@ -159,13 +159,19 @@ class App extends Component {
                                         variant="outlined"
                                         label="selected-type"
                                         id="selected-type"
-                                        value={this.state.group}
+                                        value={this.state.Type}
                                         onChange={(event) => {
-                                            this.setState({ group: event.target.value });
+                                            this.setState({ Type: event.target.value });
                                         }}
                                     >
-                                        <MenuItem value={"consumer"}>Consumer</MenuItem>
-                                        <MenuItem value={"manufactuurer"}>Manufacturer</MenuItem>
+                                        <MenuItem value={0}>Manufacturer</MenuItem>
+                                        <MenuItem value={1}>Wholesaler</MenuItem>
+                                        <MenuItem value={2}>Retailer</MenuItem>
+                                        <MenuItem value={3}>Customer</MenuItem>
+                                        <MenuItem value={4}>Collector</MenuItem>
+                                        <MenuItem value={5}>Segregator</MenuItem>
+                                        <MenuItem value={6}>Recycling Center</MenuItem>
+                                        <MenuItem value={7}>Raw Material Supplier</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
