@@ -23,6 +23,8 @@ class App extends Component {
     };
 
     async componentDidMount() {
+        console.log(window.env.CONTRACT_STAKEHOLDER_REGISTRATION);
+
         if (window.ethereum) {
             window.ethereum.enable();
             const accounts = await web3.eth.getAccounts();
@@ -32,8 +34,6 @@ class App extends Component {
         } else {
             alert("ERROR! WEB 3 NOT FOUND!");
         }
-
-        
     }
 
     // GET type of user using the account address
