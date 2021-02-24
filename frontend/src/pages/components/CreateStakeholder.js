@@ -12,7 +12,7 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -25,31 +25,96 @@ class App extends Component {
     state = {
         account: "0x00",
 
-        // Form Params
-        Qty: 0,
-        Name: "",
-        Type: "",
-        // Form PrivateInformation
-        Supplier: "",
+        // Table Params
+        rows: [],
+        status: "",
     };
 
     // handlers
-    onSubmitForm = async () => {
-        // Functions Body
-        // TODO: Add calls to register Stakeholder
-        // const accounts = await web3.eth.getAccounts();
-        // const payload = await web3.eth.personal.sign("Hi there!", accounts[0]);
-        // console.log("ENC", payload);
-        // const payload0 = await web3.eth.personal.ecRecover("Hi there!", payload);
-        // console.log("DEC", payload0);
+    onApproveStakeholder = async () => {
+        this.setState({
+            status: (
+                <Grid item xs={12}>
+                    <CircularProgress color="secondary" />
+                </Grid>
+            ),
+        });
+
+        let payload = this.rows[0];
+
+        payload.Information = JSON.stringify({ Address: payload.Address, Phone: payload.Phone });
+
+        console.log(payload);
+
+        await StakeholderRegistration.methods
+            .createStakeholder(payload.Creator, payload.ID, payload.Name, payload.Information, payload.Type)
+            .send({
+                from: this.state.account,
+            });
+
+        this.setState({ success: true });
+
+        this.setState({
+            status: (
+                <Snackbar
+                    open={this.state.success}
+                    autoHideDuration={6000}
+                    onClose={(event, reason) => {
+                        if (reason === "clickaway") {
+                            return;
+                        }
+
+                        this.setState({ success: false });
+                    }}
+                >
+                    <MuiAlert
+                        elevation={6}
+                        variant="filled"
+                        onClose={(event, reason) => {
+                            if (reason === "clickaway") {
+                                return;
+                            }
+
+                            this.setState({ success: false });
+                        }}
+                        severity="success"
+                    >
+                        Registration Approval Successful!
+                    </MuiAlert>
+                </Snackbar>
+            ),
+        });
     };
 
     async componentDidMount() {
+        this.setState({
+            status: (
+                <Grid item xs={12}>
+                    <CircularProgress color="secondary" />
+                </Grid>
+            ),
+        });
+
         const accounts = await web3.eth.getAccounts();
         this.setState({ account: accounts[0] });
 
         let tempRegistrations = await StakeholderRegistration.methods.getTempRegistrations().call();
         console.log("TEMPREG", tempRegistrations);
+
+        let rows = [];
+
+        for (let a = 0; a < tempRegistrations.length; a++) {
+            let regDetails = await StakeholderRegistration.methods.tempRegistrationMap(tempRegistrations[a]).call();
+            regDetails = JSON.parse(regDetails.Payload);
+
+            regDetails.Creator = tempRegistrations[a];
+
+            console.log(regDetails);
+
+            rows.push(regDetails);
+        }
+
+        this.setState({ rows, status: "" });
     }
 
     render() {
@@ -61,34 +126,48 @@ class App extends Component {
                             <Grid item xs={12}>
                                 <Typography variant="h4">Create Stakeholder</Typography>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12}>
                                 <TableContainer component={Paper}>
                                     <Table aria-label="simple table">
                                         <TableHead>
                                             <TableRow>
+                                                <TableCell>Serial</TableCell>
                                                 <TableCell>Address</TableCell>
                                                 <TableCell align="right">Name</TableCell>
                                                 <TableCell align="right">ID</TableCell>
                                                 <TableCell align="right">Type</TableCell>
                                                 <TableCell align="right">Phone</TableCell>
                                                 <TableCell align="right">Address</TableCell>
+                                                <TableCell align="right">Action</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {/* {rows.map((row) => (
-                                                <TableRow key={row.name}>
+                                            {this.state.rows.map((row, index) => (
+                                                <TableRow key={row.Creator}>
                                                     <TableCell component="th" scope="row">
-                                                        {row.name}
+                                                        {index + 1}
                                                     </TableCell>
-                                                    <TableCell align="right">{row.calories}</TableCell>
-                                                    <TableCell align="right">{row.fat}</TableCell>
-                                                    <TableCell align="right">{row.carbs}</TableCell>
-                                                    <TableCell align="right">{row.protein}</TableCell>
+                                                    <TableCell component="th" scope="row">
+                                                        {row.Creator}
+                                                    </TableCell>
+                                                    <TableCell component="th" scope="row">
+                                                        {row.Name}
+                                                    </TableCell>
+                                                    <TableCell align="right">{row.ID}</TableCell>
+                                                    <TableCell align="right">{row.Type}</TableCell>
+                                                    <TableCell align="right">{row.Phone}</TableCell>
+                                                    <TableCell align="right">{row.Address}</TableCell>
                                                 </TableRow>
-                                            ))} */}
+                                            ))}
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
+                            </Grid>
+                            <Grid item xs={12}>
+                                {this.state.status}
+                                <Button onClick={this.onApproveStakeholder} color="primary" variant="contained">
+                                    Approve Entry 1
+                                </Button>
                             </Grid>
                         </Grid>
                     </div>
