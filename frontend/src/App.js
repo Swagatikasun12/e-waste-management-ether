@@ -11,10 +11,14 @@ import Grid from "@material-ui/core/Grid";
 // Import Contracts
 import StakeholderRegistration from "./contracts/StakeholderRegistration";
 
-// Import Pages
+// Import Home Pages
 import HomeIssuer from "./pages/HomeIssuer";
 import HomeStakeholder from "./pages/HomeStakeholder";
 import HomeNone from "./pages/HomeNone";
+
+// Import Forms
+import PurchaseForm from "./pages/components/PurchaseForm";
+import CreateStakeholder from "./pages/components/CreateStakeholder";
 
 class App extends Component {
     state = {
@@ -75,6 +79,8 @@ class App extends Component {
                         this.state.userType === 1 ? HomeIssuer : this.state.userType === 2 ? HomeStakeholder : HomeNone
                     }
                 ></Route>
+                <Route exact path="/purchase" component={PurchaseForm}></Route>
+                <Route exact path="/create-stakeholder" component={CreateStakeholder}></Route>
             </div>
         );
     }
