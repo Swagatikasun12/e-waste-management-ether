@@ -40,7 +40,7 @@ class App extends Component {
             ),
         });
 
-        let payload = this.rows[0];
+        let payload = this.state.rows[0];
 
         payload.Information = JSON.stringify({ Address: payload.Address, Phone: payload.Phone });
 
@@ -51,6 +51,8 @@ class App extends Component {
             .send({
                 from: this.state.account,
             });
+
+        this.loadTable();
 
         this.setState({ success: true });
 
@@ -86,7 +88,7 @@ class App extends Component {
         });
     };
 
-    async componentDidMount() {
+    loadTable = async () => {
         this.setState({
             status: (
                 <Grid item xs={12}>
@@ -115,6 +117,10 @@ class App extends Component {
         }
 
         this.setState({ rows, status: "" });
+    };
+
+    async componentDidMount() {
+        await this.loadTable();
     }
 
     render() {
