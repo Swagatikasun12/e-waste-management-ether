@@ -26,10 +26,19 @@ class App extends Component {
         stakeholderBody: {},
     };
 
+    getPrivateIformation = async (user, account) => {
+        console.log(user);
+        let privateInformation = JSON.parse(user.Information);
+        user.Phone = privateInformation.Phone;
+        user.Address = privateInformation.Address;
+        return user;
+    };
+
     async componentDidMount() {
         // Set Account Address and Stakeholder Type
         const accounts = await web3.eth.getAccounts();
         let user = await StakeholderRegistration.methods.StakeholderMap(accounts[0]).call();
+        user = await this.getPrivateIformation(user, accounts[0]);
         this.setState({ accounts: accounts[0], stakeholderBody: user, stakeholderType: this.state.types[user.Type] });
     }
 
