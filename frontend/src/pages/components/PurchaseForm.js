@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import web3 from "../../web3";
+import StakeholderRegistration from "../../contracts/StakeholderRegistration";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -14,8 +15,20 @@ import MuiAlert from "@material-ui/lab/Alert";
 
 class App extends Component {
     state = {
-        warning: true,
-        suppliers: "",
+        account: "0x0",
+        stakeholderBody: {},
+        stakeholderType: 0,
+        suppliers: [],
+        types: [
+            "Manufacturer",
+            "Wholesaler",
+            "Retailer",
+            "Consumer",
+            "Collector",
+            "Segregator",
+            "Recycler",
+            "Raw Material Supplier",
+        ],
 
         // Form Params
         Qty: 0,
@@ -36,8 +49,18 @@ class App extends Component {
         // console.log("DEC", payload0);
     };
 
-    componentDidMount() {
-        let suppliers = (
+    getSuppliers = async () => {
+        let suppliersAddress = await StakeholderRegistration.methods
+            .getStakeholdersOfType(this.state.stakeholderType == 0 ? 7 : this.state.stakeholderType - 1)
+            .call();
+        console.log(suppliersAddress);
+        let suppliers = [];
+        for (let a = 0; a < suppliersAddress.length; a++) {
+            let supplier = await StakeholderRegistration.methods.StakeholderMap(suppliersAddress[a]).call();
+            suppliers.push({ Name: supplier.Name, Account: supplier.Account });
+        }
+        console.log(suppliers);
+        let suppliersSelect = (
             <Select
                 variant="outlined"
                 label="selected-type"
@@ -47,11 +70,22 @@ class App extends Component {
                     this.setState({ supplier: event.target.value });
                 }}
             >
-                <MenuItem value={"consumer"}>Consumer</MenuItem>
-                <MenuItem value={"manufactuurer"}>Manufacturer</MenuItem>
+                {suppliers.map((row, index) => (
+                    <MenuItem key={index} value={row.Account}>
+                        {row.Name}
+                    </MenuItem>
+                ))}
             </Select>
         );
-        this.setState({ suppliers: suppliers });
+        this.setState({ suppliers: suppliersSelect });
+    };
+
+    async componentDidMount() {
+        // Get Account Information and Get Suppliers
+        const accounts = await web3.eth.getAccounts();
+        let user = await StakeholderRegistration.methods.StakeholderMap(accounts[0]).call();
+        this.setState({ accounts: accounts[0], stakeholderBody: user, stakeholderType: user.Type });
+        await this.getSuppliers();
     }
 
     render() {
@@ -61,6 +95,7 @@ class App extends Component {
                     <div>
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
+                                <br />
                                 <Typography variant="h4">Purchase Product</Typography>
                             </Grid>
                             <Grid item xs={3}>
