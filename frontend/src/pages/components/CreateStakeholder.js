@@ -30,6 +30,16 @@ class App extends Component {
         status: "",
         action: true,
         success: false,
+        types: [
+            "Manufacturer",
+            "Wholesaler",
+            "Retailer",
+            "Consumer",
+            "Collector",
+            "Segregator",
+            "Recycler",
+            "Raw Material Supplier",
+        ],
     };
 
     // handlers
@@ -83,6 +93,7 @@ class App extends Component {
             regDetails = JSON.parse(regDetails.Payload);
 
             regDetails.Creator = tempRegistrations[a];
+            regDetails.Type = this.state.types[regDetails.Type];
 
             console.log(regDetails);
 
