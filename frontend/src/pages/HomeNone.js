@@ -59,36 +59,7 @@ class App extends Component {
 
         this.setState({ success: true });
 
-        this.setState({
-            status: (
-                <Snackbar
-                    open={this.state.success}
-                    autoHideDuration={6000}
-                    onClose={(event, reason) => {
-                        if (reason === "clickaway") {
-                            return;
-                        }
-
-                        this.setState({ success: false });
-                    }}
-                >
-                    <MuiAlert
-                        elevation={6}
-                        variant="filled"
-                        onClose={(event, reason) => {
-                            if (reason === "clickaway") {
-                                return;
-                            }
-
-                            this.setState({ success: false });
-                        }}
-                        severity="success"
-                    >
-                        Registration Request Successful!
-                    </MuiAlert>
-                </Snackbar>
-            ),
-        });
+        this.setState({ status: "" });
     };
 
     render() {
@@ -213,6 +184,32 @@ class App extends Component {
                         {this.state.status}
                     </Grid>
                 </form>
+                <Snackbar
+                    open={this.state.success}
+                    autoHideDuration={6000}
+                    onClose={(event, reason) => {
+                        if (reason === "clickaway") {
+                            return;
+                        }
+
+                        this.setState({ success: false });
+                    }}
+                >
+                    <MuiAlert
+                        elevation={6}
+                        variant="filled"
+                        onClose={(event, reason) => {
+                            if (reason === "clickaway") {
+                                return;
+                            }
+
+                            this.setState({ success: false });
+                        }}
+                        severity="success"
+                    >
+                        Registration Request Successful!
+                    </MuiAlert>
+                </Snackbar>
             </div>
         );
     }
