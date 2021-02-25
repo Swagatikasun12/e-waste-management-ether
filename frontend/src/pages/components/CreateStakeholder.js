@@ -28,6 +28,8 @@ class App extends Component {
         // Table Params
         rows: [],
         status: "",
+        action: true,
+        success: false,
     };
 
     // handlers
@@ -56,36 +58,7 @@ class App extends Component {
 
         this.setState({ success: true });
 
-        this.setState({
-            status: (
-                <Snackbar
-                    open={this.state.success}
-                    autoHideDuration={6000}
-                    onClose={(event, reason) => {
-                        if (reason === "clickaway") {
-                            return;
-                        }
-
-                        this.setState({ success: false });
-                    }}
-                >
-                    <MuiAlert
-                        elevation={6}
-                        variant="filled"
-                        onClose={(event, reason) => {
-                            if (reason === "clickaway") {
-                                return;
-                            }
-
-                            this.setState({ success: false });
-                        }}
-                        severity="success"
-                    >
-                        Registration Approval Successful!
-                    </MuiAlert>
-                </Snackbar>
-            ),
-        });
+        this.setState({ status: "" });
     };
 
     loadTable = async () => {
@@ -115,12 +88,46 @@ class App extends Component {
 
             rows.push(regDetails);
         }
+        if (tempRegistrations.length > 0) {
+            this.setState({ action: false });
+        }
 
         this.setState({ rows, status: "" });
     };
 
     async componentDidMount() {
-        await this.loadTable();
+        const accounts = await web3.eth.getAccounts();
+        let issuer = await StakeholderRegistration.methods.Issuer().call();
+        if (issuer === accounts[0]) {
+            await this.loadTable();
+        } else {
+            this.setState({
+                status: (
+                    <Snackbar
+                        open={true}
+                        autoHideDuration={6000}
+                        onClose={(event, reason) => {
+                            if (reason === "clickaway") {
+                                return;
+                            }
+                        }}
+                    >
+                        <MuiAlert
+                            elevation={6}
+                            variant="filled"
+                            onClose={(event, reason) => {
+                                if (reason === "clickaway") {
+                                    return;
+                                }
+                            }}
+                            severity="error"
+                        >
+                            Current Account is NOT Issuer!
+                        </MuiAlert>
+                    </Snackbar>
+                ),
+            });
+        }
     }
 
     render() {
@@ -130,6 +137,7 @@ class App extends Component {
                     <div>
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
+                                <br />
                                 <Typography variant="h4">Create Stakeholder</Typography>
                             </Grid>
                             <Grid item xs={12}>
@@ -138,13 +146,12 @@ class App extends Component {
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell>Serial</TableCell>
-                                                <TableCell>Address</TableCell>
+                                                <TableCell>Account Address</TableCell>
                                                 <TableCell align="right">Name</TableCell>
                                                 <TableCell align="right">ID</TableCell>
                                                 <TableCell align="right">Type</TableCell>
                                                 <TableCell align="right">Phone</TableCell>
                                                 <TableCell align="right">Address</TableCell>
-                                                <TableCell align="right">Action</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -156,9 +163,7 @@ class App extends Component {
                                                     <TableCell component="th" scope="row">
                                                         {row.Creator}
                                                     </TableCell>
-                                                    <TableCell component="th" scope="row">
-                                                        {row.Name}
-                                                    </TableCell>
+                                                    <TableCell align="right">{row.Name}</TableCell>
                                                     <TableCell align="right">{row.ID}</TableCell>
                                                     <TableCell align="right">{row.Type}</TableCell>
                                                     <TableCell align="right">{row.Phone}</TableCell>
@@ -171,13 +176,44 @@ class App extends Component {
                             </Grid>
                             <Grid item xs={12}>
                                 {this.state.status}
-                                <Button onClick={this.onApproveStakeholder} color="primary" variant="contained">
+                                <Button
+                                    onClick={this.onApproveStakeholder}
+                                    color="secondary"
+                                    disabled={this.state.action}
+                                    variant="contained"
+                                >
                                     Approve Entry 1
                                 </Button>
                             </Grid>
                         </Grid>
                     </div>
                 </form>
+                <Snackbar
+                    open={this.state.success}
+                    autoHideDuration={6000}
+                    onClose={(event, reason) => {
+                        if (reason === "clickaway") {
+                            return;
+                        }
+
+                        this.setState({ success: false });
+                    }}
+                >
+                    <MuiAlert
+                        elevation={6}
+                        variant="filled"
+                        onClose={(event, reason) => {
+                            if (reason === "clickaway") {
+                                return;
+                            }
+
+                            this.setState({ success: false });
+                        }}
+                        severity="success"
+                    >
+                        Registration Approval Successful!
+                    </MuiAlert>
+                </Snackbar>
             </div>
         );
     }
