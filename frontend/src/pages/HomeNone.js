@@ -95,6 +95,7 @@ class App extends Component {
                     <div>
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
+                                <br />
                                 <Typography variant="h4">Register as Stakeholder</Typography>
                             </Grid>
                             <Grid item xs={4}>
